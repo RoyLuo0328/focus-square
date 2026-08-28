@@ -35,7 +35,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: v${{ github.ref_name }}
+          tagName: ${{ github.ref_name }}
           releaseName: Focus Square ${{ github.ref_name }}
           releaseBody: |
             Focus Square 1.2.0 installers for macOS 12+ and Windows 10/11 x64.
