@@ -1,0 +1,18 @@
+name Release
+
+on
+  workflowdispatch
+    push
+        tags "v*"
+
+        jobs
+          publish
+              permissions
+                    contents write
+                        strategy
+                              fail-fast false
+                                    matrix
+                                            include
+                                                      - platform macos-latest
+                                                                  args --target universal-apple-darwin --bundles dmg
+                                                                            - platform windows-latest
