@@ -193,6 +193,11 @@ impl TimerEngine {
         &self.settings
     }
 
+    pub fn set_window_position(&mut self, x: i32, y: i32) {
+        self.settings.window_x = Some(x);
+        self.settings.window_y = Some(y);
+    }
+
     pub fn active_session_id(&self) -> Option<&str> {
         self.active_session_id.as_deref()
     }
@@ -265,6 +270,17 @@ mod tests {
         let (sessions, _) = database.records_between(0, 20_000).unwrap();
         assert_eq!(sessions[0].active_seconds, 1);
         assert_eq!(sessions[0].outcome, "completed_after_pause");
+
+        timer.settings.timer.short_break_minutes = 1;
+        let break_generation = timer.advance(&database, 20_000).unwrap();
+        assert_eq!(timer.snapshot(20_000).mode, TimerMode::ShortBreak);
+        let break_completion = timer
+            .complete_if_due(&database, 80_000, break_generation)
+            .unwrap()
+            .unwrap();
+        assert_eq!(break_completion.next_mode, TimerMode::Focus);
+        timer.advance(&database, 80_000).unwrap();
+        assert_eq!(timer.snapshot(80_000).mode, TimerMode::Focus);
 
         timer.completed_focuses = 4;
         assert_eq!(timer.next_mode(), TimerMode::LongBreak);

@@ -14,6 +14,8 @@ export interface AppSettings {
   alwaysOnTop: boolean;
   soundEnabled: boolean;
   notificationsEnabled: boolean;
+  windowX?: number | null;
+  windowY?: number | null;
   aiBaseUrl: string;
   aiModel: string;
 }

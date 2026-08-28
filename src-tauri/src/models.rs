@@ -71,6 +71,10 @@ pub struct AppSettings {
     pub always_on_top: bool,
     pub sound_enabled: bool,
     pub notifications_enabled: bool,
+    #[serde(default)]
+    pub window_x: Option<i32>,
+    #[serde(default)]
+    pub window_y: Option<i32>,
     pub ai_base_url: String,
     pub ai_model: String,
 }
@@ -83,6 +87,8 @@ impl Default for AppSettings {
             always_on_top: false,
             sound_enabled: true,
             notifications_enabled: true,
+            window_x: None,
+            window_y: None,
             ai_base_url: "https://api.openai.com/v1".into(),
             ai_model: String::new(),
         }

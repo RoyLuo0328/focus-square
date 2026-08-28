@@ -283,7 +283,7 @@ fn open_analytics(app: AppHandle) -> Result<(), String> {
         "analytics",
         WebviewUrl::App("index.html?view=analytics".into()),
     )
-    .title("Focus Square · Reports")
+    .title("Focus Square 1.2 · Reports")
     .inner_size(900.0, 680.0)
     .min_inner_size(760.0, 560.0)
     .resizable(true)
@@ -400,7 +400,13 @@ fn tray_toggle(app: &AppHandle) -> Result<(), String> {
 }
 
 fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
-    let show = MenuItem::with_id(app, "show", "显示 Focus Square / Show", true, None::<&str>)?;
+    let show = MenuItem::with_id(
+        app,
+        "show",
+        "显示 Focus Square 1.2 / Show",
+        true,
+        None::<&str>,
+    )?;
     let toggle = MenuItem::with_id(app, "toggle", "开始 / 暂停", true, None::<&str>)?;
     let reset = MenuItem::with_id(app, "reset", "重置 / Reset", true, None::<&str>)?;
     let reports = MenuItem::with_id(app, "reports", "报告 / Reports", true, None::<&str>)?;
@@ -408,7 +414,7 @@ fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
     let menu = Menu::with_items(app, &[&show, &toggle, &reset, &reports, &quit])?;
     let mut builder = TrayIconBuilder::with_id("focus-square")
         .menu(&menu)
-        .tooltip("Focus Square")
+        .tooltip("Focus Square 1.2")
         .show_menu_on_left_click(true)
         .on_menu_event(|app, event| match event.id().as_ref() {
             "show" => show_main(app),
@@ -461,6 +467,7 @@ pub fn run() {
                 .map_err(std::io::Error::other)?;
             let settings = database.load_settings().map_err(std::io::Error::other)?;
             let always_on_top = settings.always_on_top;
+            let window_position = (settings.window_x, settings.window_y);
             app.manage(AppState {
                 database,
                 timer: Mutex::new(TimerEngine::new(settings)),
@@ -469,7 +476,11 @@ pub fn run() {
             });
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.set_always_on_top(always_on_top);
-                let _ = window.set_position(LogicalPosition::new(80.0, 80.0));
+                if let (Some(x), Some(y)) = (window_position.0, window_position.1) {
+                    let _ = window.set_position(PhysicalPosition::new(x, y));
+                } else {
+                    let _ = window.set_position(LogicalPosition::new(80.0, 80.0));
+                }
             }
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
@@ -480,12 +491,22 @@ pub fn run() {
             if window.label() != "main" {
                 return;
             }
-            if let WindowEvent::CloseRequested { api, .. } = event {
-                let state = window.state::<AppState>();
-                if !state.exiting.load(Ordering::SeqCst) {
-                    api.prevent_close();
-                    let _ = window.hide();
+            match event {
+                WindowEvent::Moved(position) => {
+                    let state = window.state::<AppState>();
+                    if let Ok(mut timer) = state.timer.lock() {
+                        timer.set_window_position(position.x, position.y);
+                        let _ = state.database.save_settings(timer.settings());
+                    }
                 }
+                WindowEvent::CloseRequested { api, .. } => {
+                    let state = window.state::<AppState>();
+                    if !state.exiting.load(Ordering::SeqCst) {
+                        api.prevent_close();
+                        let _ = window.hide();
+                    }
+                }
+                _ => {}
             }
         })
         .invoke_handler(tauri::generate_handler![
@@ -507,7 +528,7 @@ pub fn run() {
             generate_ai_analysis
         ])
         .build(tauri::generate_context!())
-        .expect("error while building Focus Square");
+        .expect("error while building Focus Square 1.2");
 
     app.run(|app, event| {
         if let RunEvent::Exit = event {

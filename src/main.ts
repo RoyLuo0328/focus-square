@@ -6,6 +6,6 @@ const analytics = new URLSearchParams(window.location.search).get("view") === "a
 
 (analytics ? mountAnalytics() : mountTimer()).catch((error) => {
   const app = document.querySelector<HTMLElement>("#app")!;
-  app.innerHTML = `<main class="fatal-error"><strong>Focus Square</strong><p></p></main>`;
+  app.innerHTML = `<main class="fatal-error"><strong>Focus Square 1.2</strong><p></p></main>`;
   app.querySelector("p")!.textContent = String(error);
 });

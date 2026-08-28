@@ -35,7 +35,9 @@ button:disabled { cursor: wait; opacity: 0.55; }
   -webkit-backdrop-filter: blur(22px) saturate(110%);
 }
 
-.drag-zone { position: absolute; inset: 0 0 auto; height: 54px; z-index: 0; }
+.drag-zone { position: absolute; z-index: 10; top: 7px; left: 56px; right: 56px; height: 20px; border-radius: 10px; cursor: grab; }
+.drag-zone::after { position: absolute; top: 5px; left: 50%; width: 28px; height: 3px; border-radius: 2px; background: rgba(255,255,255,.24); content: ""; transform: translateX(-50%); }
+.drag-zone:active { cursor: grabbing; }
 .eyebrow { margin: 0; color: rgba(255,255,255,0.56); font-size: 10px; font-weight: 700; letter-spacing: 0.17em; text-transform: uppercase; }
 .timer-header { position: absolute; z-index: 1; top: 25px; left: 28px; right: 28px; display: flex; align-items: center; justify-content: space-between; }
 .timer-header .eyebrow { color: rgba(255,255,255,0.67); font-size: 11px; letter-spacing: 0.09em; text-transform: none; }
@@ -195,6 +197,7 @@ body:has(.analytics-app) { overflow: auto; background: var(--paper); }
 .ai-panel input:focus { border-color: rgba(239,107,91,.52); box-shadow: 0 0 0 3px rgba(239,107,91,.07); }
 .ai-panel .secondary, .ai-panel .primary { height: 34px; padding-top: 0; padding-bottom: 0; font-size: 9px; }
 .key-form { display: grid; grid-template-columns: 1fr auto auto; align-items: end; gap: 8px; margin-top: 9px; }
+.key-feedback { grid-column: 1 / -1; margin: 2px 0 0; color: #557b6e; font-size: 9px; }
 .text-button { font-size: 9px; }
 .ai-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 11px; }
 .ai-result { margin-top: 14px; padding: 13px; border-radius: 10px; color: #86847d; background: #ebe8e1; }

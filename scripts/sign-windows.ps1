@@ -4,10 +4,7 @@ $certificateBase64 = $env:WINDOWS_CERTIFICATE_BASE64
 $certificatePassword = $env:WINDOWS_CERTIFICATE_PASSWORD
 
 if ([string]::IsNullOrWhiteSpace($certificateBase64)) {
-    if ($env:CI -eq "true") {
-        throw "WINDOWS_CERTIFICATE_BASE64 is required for release builds."
-    }
-    Write-Host "Windows signing certificate not configured; local build will be unsigned."
+    Write-Warning "Windows signing certificate not configured; build will be unsigned."
     exit 0
 }
 

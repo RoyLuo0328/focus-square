@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { isPermissionGranted, requestPermission } from "@tauri-apps/plugin-notification";
 import { modeLabel, resolveLocale, statusLabel, translator, type Translator } from "./i18n";
 import type { AppSettings, TimerSnapshot } from "./types";
@@ -9,6 +10,7 @@ let timer: TimerSnapshot;
 let settingsOpen = false;
 let busy = false;
 let message = "";
+const currentWindow = getCurrentWindow();
 
 function text(t: Translator, key: Parameters<Translator>[0]): string {
   return String(t(key));
@@ -57,7 +59,7 @@ function render(): void {
     const focusDone = timer.mode === "focus";
     app.innerHTML = `
       <main class="timer-shell completion-shell ${focusDone ? "focus-complete" : "break-complete"}">
-        <div class="drag-zone" data-tauri-drag-region></div>
+        <div class="drag-zone"></div>
         <div class="completion-glow" aria-hidden="true"></div>
         <div class="completion-mark" aria-hidden="true">${focusDone ? "✓" : "↗"}</div>
         <p class="eyebrow">${focusDone ? text(t, "focusDone") : text(t, "breakDone")}</p>
@@ -69,6 +71,7 @@ function render(): void {
         </div>
         ${message ? `<p class="inline-message" role="status">${message}</p>` : ""}
       </main>`;
+    bindDragRegion();
     bind("advance", () => command("advance_timer"));
     bind("defer", () => command("defer_timer"));
     return;
@@ -78,7 +81,7 @@ function render(): void {
     const value = timer.settings;
     app.innerHTML = `
       <main class="timer-shell settings-shell">
-        <div class="drag-zone" data-tauri-drag-region></div>
+        <div class="drag-zone"></div>
         <header class="settings-heading">
           <h1>${text(t, "timerSettings")}</h1>
           <button class="close-button" id="cancel-settings" aria-label="${text(t, "cancel")}">×</button>
@@ -106,6 +109,7 @@ function render(): void {
           ${message ? `<p class="inline-message" role="status">${message}</p>` : ""}
         </form>
       </main>`;
+    bindDragRegion();
     bind("cancel-settings", () => {
       settingsOpen = false;
       message = "";
@@ -117,7 +121,7 @@ function render(): void {
 
   app.innerHTML = `
     <main class="timer-shell ${timer.mode}">
-      <div class="drag-zone" data-tauri-drag-region></div>
+      <div class="drag-zone"></div>
       <div class="timer-header">
         <p class="eyebrow">${phaseTitle(t)}</p>
         <span class="status-dot ${timer.status}" aria-hidden="true"></span>
@@ -140,6 +144,7 @@ function render(): void {
       </nav>
       ${message ? `<p class="timer-message" role="status">${message}</p>` : ""}
     </main>`;
+  bindDragRegion();
   bind("toggle", async () => {
     if (timer.status !== "running" && timer.settings.notificationsEnabled) await ensureNotifications();
     await command(timer.status === "running" ? "pause_timer" : "start_timer");
@@ -160,6 +165,16 @@ function toggle(name: string, label: string, checked: boolean): string {
 
 function bind(id: string, action: () => void | Promise<void>): void {
   document.querySelector(`#${id}`)?.addEventListener("click", () => void action());
+}
+
+function bindDragRegion(): void {
+  document.querySelector<HTMLElement>(".drag-zone")?.addEventListener("mousedown", (event) => {
+    if (event.button !== 0) return;
+    void currentWindow.startDragging().catch((error) => {
+      message = String(error);
+      render();
+    });
+  });
 }
 
 async function command(name: string, returnsTimer = true): Promise<void> {

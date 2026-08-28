@@ -1,6 +1,6 @@
 [package]
 name = "focus-square"
-version = "0.1.0"
+version = "1.2.0"
 description = "A private, local-first Pomodoro timer and focus analyzer"
 authors = ["Roy Luo"]
 edition = "2024"
@@ -14,7 +14,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
-keyring = "3"
+keyring = { version = "3", features = ["apple-native", "windows-native"] }
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
 rusqlite = { version = "0.40", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }

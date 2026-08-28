@@ -11,6 +11,7 @@ let rangeKind: RangeKind = "week";
 let period: ReportPeriod;
 let busy = "";
 let message = "";
+let keyMessage = "";
 
 function e(value: unknown): string {
   return String(value)
@@ -83,7 +84,7 @@ function render(): void {
   root.innerHTML = `
     <div class="analytics-layout">
       <aside class="report-sidebar">
-        <div class="brand-mark"><span></span><strong>Focus Square</strong></div>
+        <div class="brand-mark"><span></span><strong>Focus Square 1.2</strong></div>
         <div class="report-intro">
           <p class="eyebrow">LOCAL · PRIVATE</p>
           <h1>${text(t, "reportTitle")}</h1>
@@ -144,8 +145,9 @@ function render(): void {
           </form>
           <div class="key-form">
             <label>${text(t, "apiKey")}<input id="api-key" type="password" autocomplete="off" placeholder="••••••••••••"></label>
-            <button class="secondary" id="save-key" ${busy ? "disabled" : ""}>${text(t, "saveKey")}</button>
+            <button class="secondary" id="save-key" ${busy ? "disabled" : ""}>${busy === "key" ? text(t, "working") : text(t, "saveKey")}</button>
             ${aiConfig.hasApiKey ? `<button class="ghost-button text-button" id="remove-key" ${busy ? "disabled" : ""}>${text(t, "removeKey")}</button>` : ""}
+            ${keyMessage ? `<p class="key-feedback" role="status">${e(keyMessage)}</p>` : ""}
           </div>
           <div class="ai-actions">
             <button class="secondary" id="test-ai" ${busy ? "disabled" : ""}>${busy === "test" ? text(t, "working") : text(t, "testConnection")}</button>
@@ -265,11 +267,23 @@ function bindEvents(t: Translator): void {
   });
   bind("save-key", async () => {
     const apiKey = document.querySelector<HTMLInputElement>("#api-key")!.value;
-    await action("key", async () => {
+    const button = document.querySelector<HTMLButtonElement>("#save-key")!;
+    busy = "key";
+    keyMessage = "";
+    button.disabled = true;
+    button.textContent = text(t, "working");
+    try {
       aiConfig = await invoke<AiConfig>("save_ai_key", { apiKey });
-    });
+      keyMessage = text(t, "keyStored");
+    } catch (error) {
+      keyMessage = String(error);
+    } finally {
+      busy = "";
+      render();
+    }
   });
   bind("remove-key", async () => {
+    keyMessage = "";
     await action("key", async () => {
       aiConfig = await invoke<AiConfig>("delete_ai_key");
     });
