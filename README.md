@@ -1,4 +1,4 @@
-# Pomodoro Timer（番茄钟） -- Focus Square 1.4.0 -- For Mac
+# Tomato Timer（番茄钟） -- Focus Square 1.4.0 -- For Mac
 一个轻量、Mac 原生、隐私优先的番茄钟。Focus Square 提供可配置计时、每日/每周/自定义周期统计、本地专注习惯分析和可选的 OpenAI-compatible AI 建议。
 
 <p align="center">
