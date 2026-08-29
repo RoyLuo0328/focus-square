@@ -290,7 +290,7 @@ fn open_analytics(app: AppHandle) -> Result<(), String> {
         "analytics",
         WebviewUrl::App("index.html?view=analytics".into()),
     )
-    .title("Focus Square 1.3 · Reports")
+    .title("Focus Square 1.4 · Reports")
     .inner_size(900.0, 680.0)
     .min_inner_size(760.0, 560.0)
     .resizable(true)
@@ -410,7 +410,7 @@ fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
     let show = MenuItem::with_id(
         app,
         "show",
-        "显示 Focus Square 1.3 / Show",
+        "显示 Focus Square 1.4 / Show",
         true,
         None::<&str>,
     )?;
@@ -421,7 +421,7 @@ fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
     let menu = Menu::with_items(app, &[&show, &toggle, &reset, &reports, &quit])?;
     let mut builder = TrayIconBuilder::with_id("focus-square")
         .menu(&menu)
-        .tooltip("Focus Square 1.3")
+        .tooltip("Focus Square 1.4")
         .show_menu_on_left_click(true)
         .on_menu_event(|app, event| match event.id().as_ref() {
             "show" => show_main(app),
@@ -535,7 +535,7 @@ pub fn run() {
             generate_ai_analysis
         ])
         .build(tauri::generate_context!())
-        .expect("error while building Focus Square 1.3");
+        .expect("error while building Focus Square 1.4");
 
     app.run(|app, event| {
         if let RunEvent::Exit = event {
