@@ -1,18 +1,38 @@
-# Focus Square 1.4
+# Pomodoro Timer（番茄钟） -- Focus Square 1.4.0 -- For Mac
+一个轻量、Mac 原生、隐私优先的番茄钟。Focus Square 提供可配置计时、每日/每周/自定义周期统计、本地专注习惯分析和可选的 OpenAI-compatible AI 建议。
 
-一个轻量、macOS 专属、隐私优先的番茄钟。Focus Square 提供可配置计时、每日/每周/自定义周期统计、本地专注习惯分析和可选的 OpenAI-compatible AI 建议。
+<p align="center">
+  <img src="images/logo.png" width="200">
+</p>
 
-Focus Square is a lightweight, macOS-only, privacy-first Pomodoro timer with configurable sessions, local focus analytics, and optional OpenAI-compatible advice.
+Focus Square is a lightweight, Mac-first, privacy-first Tomato timer with configurable sessions, local focus analytics, and optional OpenAI-compatible advice.
 
 ## 功能
 
 - 260×260 半透明桌面计时器，到点放大为 420×420 并抢到前台提醒
+<p align="center">
+  <img src="images/ui2.png" width="200">
+</p>
+
 - 可设置专注、短休息、长休息时长和每周期轮数
+<p align="center">
+  <img src="images/ui1.png" width="200">
+</p>
+
 - 窗口位置自动保存，关闭后驻留菜单栏或系统托盘
 - 本地 SQLite 专注记录及每日、每周、自定义周期报告
+<p align="center">
+  <img src="images/ui3.png" width="400">
+</p>
+
 - 可解释的本地习惯分析，无需账号或云服务
 - 可选 AI 分析；只发送周期汇总数据，密钥保存在系统凭据库
-- 中文/英文界面，支持 macOS 12+
+<p align="center">
+  <img src="images/comment.png" width="400">
+</p>
+
+- 中文/英文界面, 支持 macOS 12+
+
 
 ## 下载与安装
 
