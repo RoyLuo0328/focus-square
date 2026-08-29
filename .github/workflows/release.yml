@@ -1,5 +1,4 @@
 name: Release
-
 on:
   workflow_dispatch:
   push:
@@ -9,15 +8,7 @@ jobs:
   publish:
     permissions:
       contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: macos-latest
-            args: --target universal-apple-darwin --bundles dmg
-          - platform: windows-latest
-            args: --target x86_64-pc-windows-msvc --bundles nsis
-    runs-on: ${{ matrix.platform }}
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,7 +17,7 @@ jobs:
           cache: npm
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || 'x86_64-pc-windows-msvc' }}
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
       - uses: swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
@@ -38,10 +29,9 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: Focus Square ${{ github.ref_name }}
           releaseBody: |
-            Focus Square 1.2.0 installers for macOS 12+ and Windows 10/11 x64.
+            Focus Square 1.4.0 installer for macOS 12+.
 
-            macOS: download the universal DMG, open it, and drag Focus Square 1.2 into Applications.
-            Windows: download the x64 setup.exe and run it.
+            macOS: download the universal DMG, open it, and drag Focus Square 1.4 into Applications.
           releaseDraft: false
           prerelease: false
-          args: ${{ matrix.args }}
+          args: --target universal-apple-darwin --bundles dmg
