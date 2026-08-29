@@ -84,7 +84,7 @@ function render(): void {
   root.innerHTML = `
     <div class="analytics-layout">
       <aside class="report-sidebar">
-        <div class="brand-mark"><span></span><strong>Focus Square 1.3</strong></div>
+        <div class="brand-mark"><span></span><strong>Focus Square 1.4</strong></div>
         <div class="report-intro">
           <p class="eyebrow">LOCAL · PRIVATE</p>
           <h1>${text(t, "reportTitle")}</h1>
